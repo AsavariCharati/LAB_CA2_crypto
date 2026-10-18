@@ -62,17 +62,23 @@ if __name__ == "__main__":
         print("Need at least 3 banks. Run: python smpc/smpc_score.py -M3")
         sys.exit(1)
     n_txn = int(os.environ.get("TXNS", 20))
-    data = generate_data(m, n_txn, DEFAULT_SEED)     # simulation: every process builds all data,
+    seed = int(os.environ.get("SEED", DEFAULT_SEED))
+    mode = os.environ.get("MODE", "verdict")
+    data = generate_data(m, n_txn, seed)             # simulation: every process builds all data,
                                                       # but only data[mpc.pid] is ever input.
     t0 = time.perf_counter()
-    verdicts = smpc_score(data)
+    verdicts = smpc_score(data, mode=mode)
     ms = (time.perf_counter() - t0) * 1000
 
     # ---- VERIFICATION vs plaintext (quick self-check; B owns the full one) ----
-    plain = [int(sum(W[0]*data[b][j][0] + W[1]*data[b][j][1] + W[2]*data[b][j][2]
-                     for b in range(m)) >= T_PER_BANK * m) for j in range(n_txn)]
+    if mode == "sum":
+        plain = [int(sum(W[0]*data[b][j][0] + W[1]*data[b][j][1] + W[2]*data[b][j][2]
+                         for b in range(m))) for j in range(n_txn)]
+    else:
+        plain = [int(sum(W[0]*data[b][j][0] + W[1]*data[b][j][1] + W[2]*data[b][j][2]
+                         for b in range(m)) >= T_PER_BANK * m) for j in range(n_txn)]
     if mpc.pid == 0:
-        print(f"banks={m} txns={n_txn} time={ms:.1f} ms")
+        print(f"banks={m} txns={n_txn} mode={mode} time={ms:.1f} ms")
         print("verdicts :", verdicts)
         print("plaintext:", plain)
-        print("MATCH" if verdicts == plain else "MISMATCH", f"| flagged {sum(verdicts)}/{n_txn}")
+        print("MATCH" if verdicts == plain else "MISMATCH", f"| flagged {sum(verdicts)}/{n_txn}" if mode != "sum" else f"| count {len(verdicts)}")

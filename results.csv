@@ -1,0 +1,13 @@
+experiment,num_banks,num_txns,mode,conventional_time_ms,smpc_time_ms,smpc_core_time_s,smpc_bytes_sent,flagged_count,match
+varying_banks,3,100,verdict,0.106,1585.0,0.157,134836,7,True
+varying_banks,5,100,verdict,0.087,1591.0,0.244,269672,5,True
+varying_banks,7,100,verdict,0.112,1824.9,0.487,404508,8,True
+varying_txns,3,10,verdict,0.012,1219.2,0.027,13516,1,True
+varying_txns,3,100,verdict,0.061,1376.0,0.191,134836,7,True
+varying_txns,3,500,verdict,0.288,2151.3,0.925,674036,52,True
+sum_vs_verdict,3,100,sum,0.091,1288.0,0.057,5636,0,True
+sum_vs_verdict,3,100,verdict,0.064,1400.7,0.181,134836,7,True
+sum_vs_verdict,5,100,sum,0.082,1445.4,0.094,11272,0,True
+sum_vs_verdict,5,100,verdict,0.088,1556.3,0.249,269672,5,True
+multibank_volume,5,500,verdict,0.414,2582.4,1.287,1348072,47,True
+multibank_volume,7,500,verdict,0.485,3805.9,2.388,2022108,40,True
